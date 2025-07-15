@@ -1,51 +1,31 @@
-variable "ec2_ingress_rules" {
-  description = "List of ingress rules for EC2 SG"
-  type = list(object({
-    description = optional(string)
-    from_port   = number
-    to_port     = number
-    protocol    = string
-    cidr_blocks = list(string)
-  }))
-  default = [
-    {
-      description = "Allow HTTP"
-      from_port   = 80
-      to_port     = 80
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
-    },
-    {
-      description = "Allow SSH"
-      from_port   = 22
-      to_port     = 22
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
-    }
-  ]
+variable "ami_owner" {
+  description = "Owner ID or name ('amazon') for AMI lookup"
+  default     = "amazon"
 }
 
-variable "ec2_egress_rules" {
-  description = "List of egress rules for EC2 SG"
-  type = list(object({
-    from_port   = number
-    to_port     = number
-    protocol    = string
-    cidr_blocks = list(string)
-  }))
-  default = [
-    {
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
-      cidr_blocks = ["0.0.0.0/0"]
-    }
-  ]
+variable "ami_name" {
+  description = "Name pattern of the AMI"
+  default     = "amzn2-ami-hvm-*-x86_64-gp2" # Update this if using Ubuntu, etc.
 }
 
-variable "ec2_sg_tags" {
-  type = map(string)
+variable "instance_type" {
+  description = "EC2 instance type"
+  default     = "t2.micro"
+}
+
+variable "subnet_ids" {
+  type = list(string)
+  description = "List of subnet IDs"
+}
+
+variable "key_name" {
+  description = "EC2 key pair name"
+}
+
+variable "instance_tags" {
+  type        = map(string)
+  description = "Tags for EC2 instance"
   default = {
-    Name = "default-ec2-sg"
+    Name = "default-web"
   }
 }
