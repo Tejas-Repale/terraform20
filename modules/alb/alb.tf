@@ -16,13 +16,13 @@ resource "aws_lb_target_group" "tg" {
   protocol = "HTTP"
   vpc_id   = var.vpc_id
 
-  health_check {
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-    timeout             = 3
-    interval            = 30
-    path                = "/"
-    matcher             = "200"
+ health_check {
+    healthy_threshold   = var.health_check_healthy_threshold
+    unhealthy_threshold = var.health_check_unhealthy_threshold
+    timeout             = var.health_check_timeout
+    interval            = var.health_check_interval
+    path                = var.health_check_path
+    matcher             = var.health_check_matcher
   }
 }
 

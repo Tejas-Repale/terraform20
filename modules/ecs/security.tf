@@ -2,23 +2,26 @@ resource "aws_security_group" "ecs_sg" {
   name   = "${var.env}-ecs-sg"
   vpc_id = var.vpc_id
 
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = var.allowed_cidrs
+  dynamic "ingress" {
+    for_each = var.ecs_ingress_rules
+    content {
+      from_port   = ingress.value.from_port
+      to_port     = ingress.value.to_port
+      protocol    = ingress.value.protocol
+      cidr_blocks = ingress.value.cidr_blocks
+      description = lookup(ingress.value, "description", null)
+    }
   }
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+  dynamic "egress" {
+    for_each = var.ecs_egress_rules
+    content {
+      from_port   = egress.value.from_port
+      to_port     = egress.value.to_port
+      protocol    = egress.value.protocol
+      cidr_blocks = egress.value.cidr_blocks
+    }
   }
 
-  tags = {
-    Name = "${var.env}-ecs-sg"
-  }
+  tags = var.ecs_sg_tags
 }
-
-
